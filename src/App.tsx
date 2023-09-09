@@ -1,24 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import { useState } from 'react';
+import styles from './App.module.css';
+import Board from './components/Board';
+import { createStartingGameState, fire } from './game/game';
+    
 function App() {
+  const [game, setGame] = useState(createStartingGameState());
+  const [message, setMessage] = useState('');
+
+  function onFire(x: number, y: number) {
+    const result = fire(x, y, game);
+    setGame(result.newGameState);
+    if (result.hit) {
+      if (result.sunk) {
+        setMessage(`Success! You sunk a ${result.shipName}!`);
+      } else {
+        setMessage('Hit!');
+      }
+    } else {
+      setMessage('Miss');
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles['App']}>
+      <h1>Battleship</h1>
+      <Board state={game.playerBoard} onFieldClick={onFire} />
+      <p className={styles['message']}>{message}</p>
     </div>
   );
 }
