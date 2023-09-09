@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styles from './App.module.css';
 import Board from './components/Board';
 import { createStartingGameState, fire } from './game/game';
+import { Scores } from './components/Scores';
+import { Ships } from './components/Ships';
     
 function App() {
   const [game, setGame] = useState(createStartingGameState());
@@ -22,10 +24,14 @@ function App() {
   }
 
   return (
-    <div className={styles['App']}>
-      <h1>Battleship</h1>
-      <Board state={game.playerBoard} onFieldClick={onFire} />
-      <p className={styles['message']}>{message}</p>
+    <div className={styles['app']}>
+      <div className={styles['app-layout']} >
+        <div className={styles['game-info']}>
+            <Scores scores={game.scores}/>
+            <Ships ships={game.ships}/>
+        </div>
+        <Board state={game.playerBoard} onFieldClick={onFire} />
+      </div>
     </div>
   );
 }

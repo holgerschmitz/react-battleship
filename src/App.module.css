@@ -1,7 +1,50 @@
-.App {
+.app {
+  width: 100vw;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
 }
 
+.app-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 48px;
+}
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.board-wrapper {
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .app-layout {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 16px;
+  }
+
+  .board-wrapper {
+    margin: 48px;
+  }  
+
+  .game-info {
+    order: 2;
+    margin-top: 32px;
+    flex-direction: row;
+    justify-content: stretch;
+  }
+}
+
+@media (max-width: 425px) {
+  .app-layout {
+    margin: 0;
+  }
+}

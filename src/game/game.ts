@@ -1,49 +1,13 @@
 import { computerShips } from '../data/ships';
-
-export enum FieldState {
-    Empty,
-    Hit,
-    Miss,
-}
-
-export interface FieldInfo {
-    state: FieldState;
-    shipId?: string;
-}
-
-export type BoardState = {
-    size: number;
-    fields: FieldState[][];
-}
-
-export enum HiddenFieldState {
-    Empty,
-    Ship,
-}
-
-export interface HiddenFieldInfo {
-    state: HiddenFieldState;
-    shipId?: string;
-}
-
-export interface GameState {
-    playerBoard: BoardState;
-    hiddenBoard: HiddenBoardState;
-    computerShips: typeof computerShips;
-};
-
-export type HiddenBoardState = {
-    size: number;
-    ships: { [key: string]: { size: number, name: string } };
-    fields: HiddenFieldInfo[][];
-}
-
-export interface FireResult {
-    newGameState: GameState;
-    hit: boolean;
-    sunk?: boolean;
-    shipName?: string;
-};
+import { 
+    BoardState, 
+    FieldState, 
+    FireResult, 
+    GameState, 
+    HiddenBoardState, 
+    HiddenFieldState,
+    ShipInfo
+} from './types';
 
 function createEmptyBoard(size: number): BoardState {
     return {
@@ -52,7 +16,8 @@ function createEmptyBoard(size: number): BoardState {
     };
 }
 
-function createComputerHiddenBoard(size: number): HiddenBoardState {
+function createComputerHiddenBoard(size: number): [HiddenBoardState, ShipInfo] {
+    const shipInfo: ShipInfo = {};
     const state: HiddenBoardState = {
         size: size,
         ships: {},
@@ -64,9 +29,15 @@ function createComputerHiddenBoard(size: number): HiddenBoardState {
     for (let i=0; i<computerShips.layout.length; i++) {
         const ship = computerShips.layout[i];
         const shipId = `ship${i}`;
+        shipInfo[shipId] = {
+            size: ship.positions.length,
+            name: ship.ship,      
+            sunk: false,      
+        };
+
         state.ships[shipId] = {
             size: ship.positions.length,
-            name: ship.ship,            
+            name: ship.ship,
         };
 
         for (const position of ship.positions) {
@@ -76,19 +47,31 @@ function createComputerHiddenBoard(size: number): HiddenBoardState {
             };
         }
     }
-    return state;
+    return [state, shipInfo];
 }
 
 export function createStartingGameState(): GameState {
+    const [hiddenBoard, shipInfo] = createComputerHiddenBoard(10);
     return {
         playerBoard: createEmptyBoard(10),
-        hiddenBoard: createComputerHiddenBoard(10),
-        computerShips: computerShips,
+        hiddenBoard: hiddenBoard,
+        ships: shipInfo,
+        scores: {
+            player: 0,
+            computer: 0,
+        },
     };
 }
 
 export function fire(x: number, y: number, gameState: GameState): FireResult {
     const newGameState = {...gameState};
+
+    if (gameState.playerBoard.fields[x][y] !== FieldState.Empty) {
+        return {
+            newGameState: newGameState,
+            hit: false,
+        };
+    }
 
     const field = gameState.hiddenBoard.fields[x][y];
     if (field.state === HiddenFieldState.Ship) {
@@ -99,6 +82,9 @@ export function fire(x: number, y: number, gameState: GameState): FireResult {
         ship.size--;
 
         if (ship.size === 0) {
+            newGameState.scores.player++;
+            newGameState.ships[shipId].sunk = true;
+
             return {
                 newGameState: newGameState,
                 hit: true,

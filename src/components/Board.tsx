@@ -1,4 +1,4 @@
-import { BoardState, FieldState } from '../game/game';
+import { BoardState, FieldState } from '../game/types';
 import styles from './Board.module.css';
 
 
@@ -7,17 +7,17 @@ export interface BoardProps {
     onFieldClick: (x: number, y: number) => void;
 }
 
-function fieldStateToString(state: FieldState): string {
+function fieldStateToClass(state: FieldState): string {
     switch (state) {
-        case FieldState.Empty:
-            return '';
         case FieldState.Hit:
-            return 'X';
+            return 'field-hit';
         case FieldState.Miss:
-            return 'o';
-    }
+            return 'field-miss';
+        default:
+        case FieldState.Empty:
+            return 'field-empty';
+        }
 }
-
 
 export default function Board({state, onFieldClick}: BoardProps) {
     return (
@@ -27,14 +27,12 @@ export default function Board({state, onFieldClick}: BoardProps) {
                     <div
                         key={x + y * state.size}
                         onClick={() => onFieldClick(y, x)}
-                        className={styles['field']}
+                        className={`${styles['field']} ${styles[fieldStateToClass(field)]}`}
                         style={{
                             gridColumn: `${y + 1}`,
                             gridRow: `${x + 1}`,
                         }}
-                    >
-                        {fieldStateToString(field)}
-                    </div>
+                    />
                 ))
             )}
         </div>

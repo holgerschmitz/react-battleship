@@ -4,24 +4,34 @@
     grid-template-rows: repeat(10, 10%);
     row-gap: 0;
     column-gap: 0;
-    width: 500px;
-    border-top: 1px solid #f0f0f0;
-    border-left: 1px solid #f0f0f0;
+    max-width: 700px;
     cursor: pointer;
     aspect-ratio: 1 / 1;
+    border: 10px solid #ffb000;
+    background-color: #f8f8f8;
 }
 
 .field {
-    border-bottom: 1px solid #f0f0f0;
-    border-right: 1px solid #f0f0f0;
+    border: 1px solid #979797;
     display: flex;
     align-items: center;
     justify-content: center;
     caret-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
-@media (max-width: 500px) {
+.field-miss {
+    background-image: url(assets/miss.png);
+}
+
+.field-hit {
+    background-image: url(assets/hit.png);
+}
+
+@media (max-width: 1023px) {
     .board {
-        width: 100%;
+        max-width: none;
     }
 }
