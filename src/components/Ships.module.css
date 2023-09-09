@@ -86,3 +86,14 @@
     }
     
 }
+
+
+@media (max-width: 660px) {
+    .ships {
+        height: 200px;
+    }
+
+    .ship-row {
+        margin-bottom: 20px;
+    }
+  }

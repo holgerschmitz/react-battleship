@@ -43,8 +43,15 @@
   }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 660px) {
   .app-layout {
     margin: 0;
+  }
+  .game-info {
+    order: 2;
+    margin-top: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
   }
 }
